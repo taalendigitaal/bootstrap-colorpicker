@@ -112,7 +112,7 @@
             if (this.format === 'rgba' || this.format === 'hsla') {
                 this.picker.addClass('colorpicker-with-alpha');
             }
-            this.picker.on('mousedown.colorpicker', $.proxy(this.mousedown, this));
+            this.picker.on('mousedown.colorpicker touchstart.colorpicker', $.proxy(this.mousedown, this));
             this.picker.appendTo(this.container ? this.container : $('body'));
 
             // Bind events
@@ -141,6 +141,15 @@
             if ((this.input === false) && (this.component === false)) {
                 this.element.on({
                     'click.colorpicker': $.proxy(this.show, this)
+                });
+            }
+
+            // for HTML5 input[type='color']
+            if ((this.input !== false) && (this.component !== false) && (this.input.attr('type') === 'color')) {
+
+                this.input.on({
+                    'click.colorpicker': $.proxy(this.show, this),
+                    'focus.colorpicker': $.proxy(this.show, this)
                 });
             }
             this.update();
@@ -188,7 +197,7 @@
                 this.picker.addClass('colorpicker-visible').removeClass('colorpicker-hidden');
                 this.reposition();
                 $(window).on('resize.colorpicker', $.proxy(this.reposition, this));
-                if (!this.hasInput() && e) {
+                if (e && (!this.hasInput() || this.input.attr('type') === 'color')) {
                     if (e.stopPropagation && e.preventDefault) {
                         e.stopPropagation();
                         e.preventDefault();
@@ -334,6 +343,10 @@
                 top: 0
             },
             mousedown: function(e) {
+                if (!e.pageX && !e.pageY && e.originalEvent) {
+                    e.pageX = e.originalEvent.touches[0].pageX;
+                    e.pageY = e.originalEvent.touches[0].pageY;
+                }
                 e.stopPropagation();
                 e.preventDefault();
 
@@ -364,12 +377,18 @@
                     //trigger mousemove to move the guide to the current position
                     $(document).on({
                         'mousemove.colorpicker': $.proxy(this.mousemove, this),
-                        'mouseup.colorpicker': $.proxy(this.mouseup, this)
+                        'touchmove.colorpicker': $.proxy(this.mousemove, this),
+                        'mouseup.colorpicker': $.proxy(this.mouseup, this),
+                        'touchend.colorpicker': $.proxy(this.mouseup, this)
                     }).trigger('mousemove');
                 }
                 return false;
             },
             mousemove: function(e) {
+                if (!e.pageX && !e.pageY && e.originalEvent) {
+                    e.pageX = e.originalEvent.touches[0].pageX;
+                    e.pageY = e.originalEvent.touches[0].pageY;
+                }
                 e.stopPropagation();
                 e.preventDefault();
                 var left = Math.max(
@@ -389,10 +408,10 @@
                 this.currentSlider.guide.left = left + 'px';
                 this.currentSlider.guide.top = top + 'px';
                 if (this.currentSlider.callLeft) {
-                    this.color[this.currentSlider.callLeft].call(this.color, left / 100);
+                    this.color[this.currentSlider.callLeft].call(this.color, left / this.currentSlider.maxLeft);
                 }
                 if (this.currentSlider.callTop) {
-                    this.color[this.currentSlider.callTop].call(this.color, top / 100);
+                    this.color[this.currentSlider.callTop].call(this.color, top / this.currentSlider.maxTop);
                 }
                 this.update(true);
 
@@ -407,7 +426,9 @@
                 e.preventDefault();
                 $(document).off({
                     'mousemove.colorpicker': this.mousemove,
-                    'mouseup.colorpicker': this.mouseup
+                    'touchmove.colorpicker': this.mousemove,
+                    'mouseup.colorpicker': this.mouseup,
+                    'touchend.colorpicker': this.mouseup
                 });
                 return false;
             },

@@ -9,12 +9,12 @@ var Color = function(val) {
     this.origFormat = null; // original string format
     if (val) {
         if (val.toLowerCase !== undefined) {
-	  // cast to string
-	  val = val + '';
-	  if(val.charAt(0) !== "#" && (val.length === 3 || val.length === 6)){
-	    val = '#'+val;
-	  }
-	  this.setColor(val);
+            // cast to string
+            val = val + '';
+            if (val.charAt(0) !== "#" && (val.length === 3 || val.length === 6)) {
+                val = '#' + val;
+            }
+            this.setColor(val);
         } else if (val.h !== undefined) {
             this.value = val;
         }
@@ -271,7 +271,7 @@ Color.prototype = {
             h: isNaN(H) ? 0 : H,
             s: isNaN(S) ? 0 : S,
             l: isNaN(L) ? 0 : L,
-            a: isNaN(a) ? 0 : a,
+            a: isNaN(a) ? 0 : a
         };
     },
     toAlias: function(r, g, b, a) {
@@ -388,7 +388,7 @@ Color.prototype = {
     // from John Resig color plugin
     // https://github.com/jquery/jquery-color/
     stringParsers: [{
-        re: /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/,
+        re: /#?([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/,
         format: 'hex',
         parse: function(execResult) {
             return [
@@ -399,7 +399,7 @@ Color.prototype = {
             ];
         }
     }, {
-        re: /#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/,
+        re: /#?([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/,
         format: 'hex',
         parse: function(execResult) {
             return [
