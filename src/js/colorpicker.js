@@ -112,6 +112,9 @@
             if (this.format === 'rgba' || this.format === 'hsla') {
                 this.picker.addClass('colorpicker-with-alpha');
             }
+            if (this.options.align === 'right') {
+                this.picker.addClass('colorpicker-right');
+            }
             this.picker.on('mousedown.colorpicker touchstart.colorpicker', $.proxy(this.mousedown, this));
             this.picker.appendTo(this.container ? this.container : $('body'));
 
@@ -182,9 +185,13 @@
                     return false;
                 }
                 var type = this.container && this.container[0] !== document.body ? 'position' : 'offset';
-                var offset = this.component ? this.component[type]() : this.element[type]();
+                var element = this.component || this.element;
+                var offset = element[type]();
+                if (this.options.align === 'right') {
+                    offset.left -= this.picker.outerWidth() - element.outerWidth()
+                }
                 this.picker.css({
-                    top: offset.top + (this.component ? this.component.outerHeight() : this.element.outerHeight()),
+                    top: offset.top + element.outerHeight(),
                     left: offset.left
                 });
             },
@@ -472,9 +479,10 @@
         $.colorpicker = Colorpicker;
 
         $.fn.colorpicker = function(option) {
-            var pickerArgs = arguments;
+            var pickerArgs = arguments,
+                rv;
 
-            return this.each(function() {
+            var $returnValue = this.each(function() {
                 var $this = $(this),
                     inst = $this.data('colorpicker'),
                     options = ((typeof option === 'object') ? option : {});
@@ -482,10 +490,14 @@
                     $this.data('colorpicker', new Colorpicker(this, options));
                 } else {
                     if (typeof option === 'string') {
-                        inst[option].apply(inst, Array.prototype.slice.call(pickerArgs, 1));
+                        rv = inst[option].apply(inst, Array.prototype.slice.call(pickerArgs, 1));
                     }
                 }
             });
+            if (option === 'getValue') {
+                return rv;
+            }
+            return $returnValue;
         };
 
         $.fn.colorpicker.constructor = Colorpicker;
