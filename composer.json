@@ -1,13 +1,33 @@
 {
-  "name": "mjolnic/bootstrap-colorpicker",
-  "description": "A nice and customizable colorpicker plugin for Twitter Bootstrap 2 and 3",
-  "license": "Licensed under the Apache License, Version 2.0",
-  "authors": [
-    {
-      "name": "Javier Aguilar",
-      "homepage": "http://www.mjolnic.com/"
+    "name": "taalendigitaal/bootstrap-colorpicker",
+    "description": "A nice and customizable colorpicker plugin for Twitter Bootstrap 2 and 3",
+    "license": "Licensed under the Apache License, Version 2.0",
+    "authors": [
+        {
+            "name": "Javier Aguilar",
+            "homepage": "http://www.mjolnic.com/"
+        }
+    ],
+    "minimum-stability": "dev",
+    "type": "component",
+    "require": {
+        "robloach/component-installer": "*"
+    },
+    "extra": {
+        "component": {
+            "scripts": [
+                "dist/js/bootstrap-colorpicker.js"
+            ],
+            "styles": [
+                "dist/css/bootstrap-colorpicker.css"
+            ],
+            "files": [
+                "dist/img/bootstrap-colorpicker/saturation.png",
+                "dist/img/bootstrap-colorpicker/alpha.png",
+                "dist/img/bootstrap-colorpicker/hue.png",
+                "dist/js/bootstrap-colorpicker.min.js",
+                "dist/css/bootstrap-colorpicker.min.css"
+            ]
+        }
     }
-  ],
-  "minimum-stability": "dev",
-  "require": {}
 }
